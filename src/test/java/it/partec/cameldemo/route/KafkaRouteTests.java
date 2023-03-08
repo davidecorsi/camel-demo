@@ -52,7 +52,6 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
         .processed(false)
         .build();
 
-    Thread.sleep(10000);
     producerTemplate.sendBody("kafka:payment", new ObjectMapper().writeValueAsString(paymentDto));
 
     NotifyBuilder notify = new NotifyBuilder(camelContext)
@@ -80,7 +79,6 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
         .processed(false)
         .build();
 
-    Thread.sleep(10000);
     producerTemplate.sendBody("kafka:payment", new ObjectMapper().writeValueAsString(paymentDto));
 
     NotifyBuilder notify = new NotifyBuilder(camelContext)
