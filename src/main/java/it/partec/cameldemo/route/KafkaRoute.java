@@ -1,12 +1,8 @@
 package it.partec.cameldemo.route;
 
-import it.partec.cameldemo.aggregation.ArrayListAggregationStrategy;
-import it.partec.cameldemo.dto.PaymentDto;
-import it.partec.cameldemo.dto.PaymentExceptionDto;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.DeadLetterChannelBuilder;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLIntegrityConstraintViolationException;

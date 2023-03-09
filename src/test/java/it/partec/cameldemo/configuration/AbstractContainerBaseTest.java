@@ -5,7 +5,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
 
-public class AbstractContainerBaseTest {
+public abstract class AbstractContainerBaseTest {
 
   public static final DockerComposeContainer environment;
 

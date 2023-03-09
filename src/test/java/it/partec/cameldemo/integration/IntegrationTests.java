@@ -5,7 +5,6 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
 import org.apache.commons.net.ftp.FTPClient;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +15,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 
 @CamelSpringBootTest
 @SpringBootTest
@@ -31,7 +33,6 @@ class IntegrationTests extends AbstractContainerBaseTest {
 
   @Test
   void integrationTest() throws InterruptedException, IOException {
-    Thread.sleep(10000);
     FTPClient client = new FTPClient();
 
     client.connect("localhost");
@@ -40,15 +41,20 @@ class IntegrationTests extends AbstractContainerBaseTest {
     client.storeFile("input/" + inputFile.getFilename(), inputFile.getInputStream());
     client.logout();
 
-    Thread.sleep(10000);
-    client.connect("localhost");
-    client.login("test", "1234");
-    client.enterLocalPassiveMode();
-    Assertions.assertEquals(2, client.listDirectories().length);
+    await().atMost(20, TimeUnit.SECONDS).until(() -> {
+      client.connect("localhost");
+      client.login("test", "1234");
+      client.enterLocalPassiveMode();
+      int size = client.listDirectories().length;
+      client.logout();
+      return 2 == size;
+    });
 
-    ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
-        "select count(*) from PAYMENT", ArrayList.class);
-    Assertions.assertEquals("2", count.get(0).get("count(*)").toString());
-    producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
+    await().atMost(50, TimeUnit.SECONDS).until(() -> {
+      ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
+          "select count(*) from PAYMENT", ArrayList.class);
+      producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
+      return "2".equals(count.get(0).get("count(*)").toString());
+    });
   }
 }

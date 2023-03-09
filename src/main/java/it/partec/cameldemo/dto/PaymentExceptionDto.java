@@ -10,7 +10,7 @@ import org.apache.camel.dataformat.bindy.annotation.DataField;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentExceptionDto extends PaymentDto {
+public class PaymentExceptionDto {
 
   @DataField(pos = 1)
   private Long idPayment;

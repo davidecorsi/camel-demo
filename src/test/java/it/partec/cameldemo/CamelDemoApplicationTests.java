@@ -9,6 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 class CamelDemoApplicationTests {
 
 	@Test
+	@SuppressWarnings("squid:S2699")
 	void contextLoads() {
 	}
 }
