@@ -5,6 +5,7 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
 import org.apache.commons.net.ftp.FTPClient;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ class IntegrationTests extends AbstractContainerBaseTest {
   private ProducerTemplate producerTemplate;
 
   @Test
+  @DisplayName("Test di integrazione che segue il normale flusso con successo")
   void integrationTest() throws InterruptedException, IOException {
     FTPClient client = new FTPClient();
 
