@@ -55,7 +55,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
     producerTemplate.sendBody("kafka:payment", new ObjectMapper().writeValueAsString(paymentDto));
 
     NotifyBuilder notify = new NotifyBuilder(camelContext)
-        .from("kafka:payment").whenDone(1)
+        .from("kafka:payment?groupId=test").whenDone(1)
         .create();
 
     boolean done = notify.matches(10, TimeUnit.SECONDS);
@@ -82,7 +82,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
     producerTemplate.sendBody("kafka:payment", new ObjectMapper().writeValueAsString(paymentDto));
 
     NotifyBuilder notify = new NotifyBuilder(camelContext)
-        .from("kafka:payment").whenDone(1)
+        .from("kafka:payment?groupId=test").whenDone(1)
         .create();
 
     boolean done = notify.matches(10, TimeUnit.SECONDS);
