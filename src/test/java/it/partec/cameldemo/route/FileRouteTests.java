@@ -7,6 +7,7 @@ import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
 import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
 import org.apache.commons.net.ftp.FTPClient;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,7 @@ class FileRouteTests extends AbstractContainerBaseTest {
   private MockEndpoint kafkaMock;
 
   @Test
+  @DisplayName("Test di lettura dal server ftp ed inserimento nella coda kafka")
   void routeTest() throws Exception {
     Thread.sleep(10000);
     FTPClient client = new FTPClient();

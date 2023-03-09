@@ -7,6 +7,7 @@ import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,7 @@ class RestRouteTests extends AbstractContainerBaseTest {
   }
 
   @Test
+  @DisplayName("Test dell'endpoint per leggere i dati sul database")
   void getTest() throws Exception {
     PaymentDto paymentDto = PaymentDto.builder()
         .idPayment(1L)

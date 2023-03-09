@@ -44,6 +44,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
   private MockEndpoint errorMock;
 
   @Test
+  @DisplayName("Test dello scodamento da kafka ed inserimento nel database")
   void insertDbTest() throws Exception {
     PaymentDto paymentDto = PaymentDto.builder()
         .idPayment(1L)
@@ -67,6 +68,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
   }
 
   @Test
+  @DisplayName("Test dead letter channel in caso di errore nell'inserimento dei dati sul database")
   void deadMessageTest() throws InterruptedException, JsonProcessingException {
     ContainerState mysql = (ContainerState) environment.getContainerByServiceName("db").get();
     String id = mysql.getContainerId();

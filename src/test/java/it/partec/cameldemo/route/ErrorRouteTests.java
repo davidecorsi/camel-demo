@@ -8,6 +8,7 @@ import org.apache.camel.builder.NotifyBuilder;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,7 @@ class ErrorRouteTests extends AbstractContainerBaseTest {
   private CamelContext camelContext;
 
   @Test
+  @DisplayName("Test della rotta in caso di errore nello scodamento da kafka")
   void errorTest() throws Exception {
     PaymentDto paymentDto = PaymentDto.builder()
         .idPayment(1L)
