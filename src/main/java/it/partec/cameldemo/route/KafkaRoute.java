@@ -29,7 +29,7 @@ public class KafkaRoute extends RouteBuilder {
         .maximumRedeliveries(3)
         .redeliveryDelay(1000));
 
-    from("kafka:payment")
+    from("kafka:payment?groupId=test")
         .routeId("kafkaRoute")
         .log("processamento del messaggio ${body}")
         .setHeader("idPayment", simple("${body.idPayment}"))
