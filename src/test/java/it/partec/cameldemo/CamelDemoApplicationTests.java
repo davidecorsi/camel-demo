@@ -1,15 +1,15 @@
 package it.partec.cameldemo;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest
 @DirtiesContext
-class CamelDemoApplicationTests {
+public class CamelDemoApplicationTests {
 
 	@Test
 	@SuppressWarnings("squid:S2699")
-	void contextLoads() {
+	public void contextLoads() {
 	}
 }

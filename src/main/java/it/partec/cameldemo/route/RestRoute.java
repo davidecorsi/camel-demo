@@ -15,7 +15,7 @@ public class RestRoute extends RouteBuilder {
 
     rest("/payments")
         .get("/")
-        .routeId("getPayments")
+        .id("getPayments")
         .to("direct:getPayments");
 
     from("direct:getPayments")

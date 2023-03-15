@@ -10,10 +10,11 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.NotifyBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
-import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
-import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
-import org.junit.jupiter.api.*;
+import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.camel.test.spring.MockEndpointsAndSkip;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,12 +25,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
-@CamelSpringBootTest
+@RunWith(CamelSpringBootRunner.class)
 @SpringBootTest
 @MockEndpointsAndSkip("direct:error")
 @DirtiesContext
-@EnableRouteCoverage
-class KafkaRouteTests extends AbstractContainerBaseTest {
+public class KafkaRouteTests extends AbstractContainerBaseTest {
 
   @Autowired
   private ProducerTemplate producerTemplate;
@@ -40,12 +40,11 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
   @Autowired
   private CamelContext camelContext;
 
-  @EndpointInject("mock:direct:error")
+  @EndpointInject(uri = "mock:direct:error")
   private MockEndpoint errorMock;
 
   @Test
-  @DisplayName("Test dello scodamento da kafka ed inserimento nel database")
-  void insertDbTest() throws Exception {
+  public void insertDbTest() throws Exception {
     PaymentDto paymentDto = PaymentDto.builder()
         .idPayment(1L)
         .name("Rebecca")
@@ -60,16 +59,15 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
         .create();
 
     boolean done = notify.matches(10, TimeUnit.SECONDS);
-    Assertions.assertTrue(done);
+    Assert.assertTrue(done);
     ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
         "select count(*) from PAYMENT", ArrayList.class);
-    Assertions.assertEquals("1", count.get(0).get("count(*)").toString());
+    Assert.assertEquals("1", count.get(0).get("count(*)").toString());
     producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
   }
 
   @Test
-  @DisplayName("Test dead letter channel in caso di errore nell'inserimento dei dati sul database")
-  void deadMessageTest() throws InterruptedException, JsonProcessingException {
+  public void deadMessageTest() throws InterruptedException, JsonProcessingException {
     ContainerState mysql = (ContainerState) environment.getContainerByServiceName("db").get();
     String id = mysql.getContainerId();
     DockerClientFactory.lazyClient().stopContainerCmd(id).exec();
@@ -88,7 +86,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
         .create();
 
     boolean done = notify.matches(10, TimeUnit.SECONDS);
-    Assertions.assertTrue(done);
+    Assert.assertTrue(done);
 
     errorMock.expectedMessageCount(1);
     errorMock.setAssertPeriod(10);

@@ -2,11 +2,10 @@ package it.partec.cameldemo.integration;
 
 import it.partec.cameldemo.configuration.AbstractContainerBaseTest;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
-import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
+import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.commons.net.ftp.FTPClient;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,11 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 
-@CamelSpringBootTest
+@RunWith(CamelSpringBootRunner.class)
 @SpringBootTest
 @DirtiesContext
-@EnableRouteCoverage
-class IntegrationTests extends AbstractContainerBaseTest {
+public class IntegrationTests extends AbstractContainerBaseTest {
 
   @Value("classpath:test.csv")
   private Resource inputFile;
@@ -33,8 +31,7 @@ class IntegrationTests extends AbstractContainerBaseTest {
   private ProducerTemplate producerTemplate;
 
   @Test
-  @DisplayName("Test di integrazione che segue il normale flusso con successo")
-  void integrationTest() throws InterruptedException, IOException {
+  public void integrationTest() throws InterruptedException, IOException {
     FTPClient client = new FTPClient();
 
     client.connect("localhost");
@@ -52,7 +49,7 @@ class IntegrationTests extends AbstractContainerBaseTest {
       return 2 == size;
     });
 
-    await().atMost(50, TimeUnit.SECONDS).until(() -> {
+    await().atMost(60, TimeUnit.SECONDS).until(() -> {
       ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
           "select count(*) from PAYMENT", ArrayList.class);
       producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");

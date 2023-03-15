@@ -3,23 +3,21 @@ package it.partec.cameldemo.route;
 import it.partec.cameldemo.configuration.AbstractContainerBaseTest;
 import it.partec.cameldemo.dto.PaymentDto;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
-import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-@CamelSpringBootTest
+@RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-@EnableRouteCoverage
-class RestRouteTests extends AbstractContainerBaseTest {
+public class RestRouteTests extends AbstractContainerBaseTest {
 
   @Autowired
   private ProducerTemplate producerTemplate;
@@ -27,14 +25,13 @@ class RestRouteTests extends AbstractContainerBaseTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
-  @AfterEach
-  void cleanup() {
+  @After
+  public void cleanup() {
     producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
   }
 
   @Test
-  @DisplayName("Test dell'endpoint per leggere i dati sul database")
-  void getTest() throws Exception {
+  public void getTest() throws Exception {
     PaymentDto paymentDto = PaymentDto.builder()
         .idPayment(1L)
         .name("Rebecca")
@@ -49,6 +46,6 @@ class RestRouteTests extends AbstractContainerBaseTest {
             ")");
 
     ResponseEntity<PaymentDto[]> paymentDtoArray = restTemplate.getForEntity("/payments", PaymentDto[].class);
-    Assertions.assertEquals(1, paymentDtoArray.getBody().length);
+    Assert.assertEquals(1, paymentDtoArray.getBody().length);
   }
 }
