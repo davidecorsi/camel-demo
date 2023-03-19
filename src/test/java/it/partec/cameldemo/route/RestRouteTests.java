@@ -2,6 +2,7 @@ package it.partec.cameldemo.route;
 
 import it.partec.cameldemo.configuration.AbstractContainerBaseTest;
 import it.partec.cameldemo.dto.PaymentDto;
+import it.partec.cameldemo.model.Payment;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.EnableRouteCoverage;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 @CamelSpringBootTest
@@ -27,28 +29,30 @@ class RestRouteTests extends AbstractContainerBaseTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
+
   @AfterEach
   void cleanup() {
-    producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
+    jdbcTemplate.execute("truncate payment");
   }
 
   @Test
   @DisplayName("Test dell'endpoint per leggere i dati sul database")
   void getTest() throws Exception {
-    PaymentDto paymentDto = PaymentDto.builder()
+    Payment payment = Payment.builder()
         .idPayment(1L)
         .name("Rebecca")
         .surname("Trentino")
-        .processed(false)
         .build();
 
-    producerTemplate.sendBody("jdbc:dataSource", "insert into PAYMENT (ID_PAYMENT, NAME, SURNAME) VALUES (" +
-            "'" + paymentDto.getIdPayment() + "', " +
-            "'" + paymentDto.getName() + "', " +
-            "'" + paymentDto.getSurname() + "'" +
+    jdbcTemplate.execute("insert into payment (id_payment, name, surname) VALUES (" +
+            "'" + payment.getIdPayment() + "', " +
+            "'" + payment.getName() + "', " +
+            "'" + payment.getSurname() + "'" +
             ")");
 
-    ResponseEntity<PaymentDto[]> paymentDtoArray = restTemplate.getForEntity("/payments", PaymentDto[].class);
+    ResponseEntity<Payment[]> paymentDtoArray = restTemplate.getForEntity("/payments", Payment[].class);
     Assertions.assertEquals(1, paymentDtoArray.getBody().length);
   }
 }

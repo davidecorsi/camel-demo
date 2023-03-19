@@ -16,12 +16,11 @@ import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.ContainerState;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 @CamelSpringBootTest
@@ -39,6 +38,9 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
 
   @Autowired
   private CamelContext camelContext;
+
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @EndpointInject("mock:direct:error")
   private MockEndpoint errorMock;
@@ -61,10 +63,9 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
 
     boolean done = notify.matches(10, TimeUnit.SECONDS);
     Assertions.assertTrue(done);
-    ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
-        "select count(*) from PAYMENT", ArrayList.class);
-    Assertions.assertEquals("1", count.get(0).get("count(*)").toString());
-    producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
+    Long count = jdbcTemplate.queryForObject("select count(*) from payment", Long.class);
+    Assertions.assertEquals(1, count);
+    jdbcTemplate.execute("truncate payment");
   }
 
   @Test

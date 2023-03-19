@@ -21,7 +21,6 @@ public class RestRoute extends RouteBuilder {
     from("direct:getPayments")
         .routeId("directGetPayments")
         .log("Richiesta lista pagamenti")
-        .setBody(constant("select * from PAYMENT"))
-        .to("jdbc:dataSource");
+        .to("jpa:it.partec.cameldemo.model.Payment?query=select p from it.partec.cameldemo.model.Payment p&consumeDelete=false&persistenceUnit=mysql");
   }
 }

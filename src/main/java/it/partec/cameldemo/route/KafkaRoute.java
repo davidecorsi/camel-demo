@@ -1,6 +1,9 @@
 package it.partec.cameldemo.route;
 
+import it.partec.cameldemo.dto.PaymentDto;
+import it.partec.cameldemo.model.Payment;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.DeadLetterChannelBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -29,11 +32,10 @@ public class KafkaRoute extends RouteBuilder {
         .routeId("kafkaRoute")
         .log("processamento del messaggio ${body}")
         .setHeader("idPayment", simple("${body.idPayment}"))
-        .setBody(simple("insert into PAYMENT (ID_PAYMENT, NAME, SURNAME) VALUES (" +
-            "'${body.idPayment}', " +
-            "'${body.name}', " +
-            "'${body.surname}'" +
-            ")"))
-        .to("jdbc:dataSource");
+        .process(exchange -> {
+          PaymentDto paymentDto = exchange.getMessage().getBody(PaymentDto.class);
+          exchange.getMessage().setBody(new Payment(paymentDto));
+        })
+        .to("jpa:it.partec.cameldemo.model.Payment?entityType=java.util.ArrayList&persistenceUnit=mysql");
   }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ class IntegrationTests extends AbstractContainerBaseTest {
 
   @Autowired
   private ProducerTemplate producerTemplate;
+
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @Test
   @DisplayName("Test di integrazione che segue il normale flusso con successo")
@@ -53,10 +57,10 @@ class IntegrationTests extends AbstractContainerBaseTest {
     });
 
     await().atMost(50, TimeUnit.SECONDS).until(() -> {
-      ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
-          "select count(*) from PAYMENT", ArrayList.class);
-      producerTemplate.sendBody("jdbc:dataSource", "truncate PAYMENT");
-      return "2".equals(count.get(0).get("count(*)").toString());
+
+      Long count = jdbcTemplate.queryForObject("select count(*) from payment", Long.class);
+      jdbcTemplate.execute("truncate payment");
+      return 2 == count;
     });
   }
 }
