@@ -17,6 +17,8 @@
 		<java.version>11</java.version>
 		<testcontainers.version>1.17.6</testcontainers.version>
 		<camel.version>3.20.2</camel.version>
+		<sonar.organization>davidecorsi</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -130,16 +132,43 @@
 				<groupId>org.apache.camel</groupId>
 				<artifactId>camel-report-maven-plugin</artifactId>
 				<version>${camel.version}</version>
+				<configuration>
+					<includeTest>true</includeTest>
+					<generateJacocoXmlReport>true</generateJacocoXmlReport>
+				</configuration>
 				<executions>
 					<execution>
-						<phase>process-classes</phase>
+						<phase>process-test-classes</phase>
 						<goals>
 							<goal>validate</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<exclude>it/partec/cameldemo/dto/*</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

@@ -1,3 +1,7 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=davidecorsi_camel-demo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=davidecorsi_camel-demo)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=davidecorsi_camel-demo&metric=coverage)](https://sonarcloud.io/summary/new_code?id=davidecorsi_camel-demo)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=davidecorsi_camel-demo&metric=bugs)](https://sonarcloud.io/summary/new_code?id=davidecorsi_camel-demo)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=davidecorsi_camel-demo&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=davidecorsi_camel-demo)
 # Camel Demo
 
 Applicazione demo per l'utilizzo di apache camel.
