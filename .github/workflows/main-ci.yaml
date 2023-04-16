@@ -46,9 +46,16 @@ jobs:
         with:
           java-version: 11
           distribution: 'zulu' # Alternative distribution options are available.
-      - run: mvn -B package --file pom.xml -DskipTests
-      - run: mkdir staging && cp target/*.jar staging
-      - uses: actions/upload-artifact@v3
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build
+        run: mvn -B package --file pom.xml -DskipTests && mkdir staging && cp target/*.jar staging
+      - name: Package
+        uses: actions/upload-artifact@v3
         with:
           name: Package
           path: staging
