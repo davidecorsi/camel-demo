@@ -34,7 +34,7 @@ class IntegrationTests extends AbstractContainerBaseTest {
 
   @Test
   @DisplayName("Test di integrazione che segue il normale flusso con successo")
-  void integrationTest() throws InterruptedException, IOException {
+  void integrationTest() throws IOException {
     FTPClient client = new FTPClient();
 
     client.connect("localhost");
