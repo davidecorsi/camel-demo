@@ -14,7 +14,7 @@
 	<name>camel-demo</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<testcontainers.version>1.17.6</testcontainers.version>
 		<camel.version>3.20.2</camel.version>
 		<sonar.organization>davidecorsi</sonar.organization>
