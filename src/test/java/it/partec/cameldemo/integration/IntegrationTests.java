@@ -44,6 +44,12 @@ class IntegrationTests extends AbstractContainerBaseTest {
     client.logout();
 
     await().atMost(20, TimeUnit.SECONDS).until(() -> {
+      ArrayList<LinkedHashMap<String, Object>> count = producerTemplate.requestBody("jdbc:dataSource",
+          "select count(*) from PAYMENT", ArrayList.class);
+      return "0".equals(count.get(0).get("count(*)").toString());
+    });
+
+    await().atMost(20, TimeUnit.SECONDS).until(() -> {
       client.connect("localhost");
       client.login("test", "1234");
       client.enterLocalPassiveMode();
