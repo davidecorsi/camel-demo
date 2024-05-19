@@ -69,7 +69,7 @@ class KafkaRouteTests extends AbstractContainerBaseTest {
 
   @Test
   @DisplayName("Test dead letter channel in caso di errore nell'inserimento dei dati sul database")
-  void deadMessageTest() throws InterruptedException, JsonProcessingException {
+  void deadMessageTest() throws JsonProcessingException {
     ContainerState mysql = (ContainerState) environment.getContainerByServiceName("db").get();
     String id = mysql.getContainerId();
     DockerClientFactory.lazyClient().stopContainerCmd(id).exec();
